@@ -248,7 +248,7 @@ def web_to_track(web_track, bitrate=None, album=None):
 
     if album is None:
         album = web_to_album(web_track.get("album", {}))
-
+        
     return models.Track(
         uri=ref.uri,
         name=ref.name,

@@ -44,9 +44,10 @@ class SpotifyPlaybackProvider(backend.PlaybackProvider):
         username = self.backend._config["spotify"]["username"]
         password = self.backend._config["spotify"]["password"]
         self._auth_string = f"username={username}&password={password}"
+        self._device_name = self.backend._config["spotify"]["device_name"]
 
     def translate_uri(self, uri):
-        return f"{uri}?{self._auth_string}&devicename={self.backend._config["spotify"]["device_name"]}"
+        return f"{uri}?{self._auth_string}&devicename={self._device_name}"
 
     def on_source_setup(self, source):
         config = self.backend._config["spotify"]

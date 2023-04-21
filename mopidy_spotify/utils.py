@@ -12,24 +12,24 @@ TRACE = logging.getLevelName("TRACE")
 
 
 def get_requests_session(proxy_config):
-    user_agent = f"{Extension.dist_name}/{__version__}"
-    proxy = httpclient.format_proxy(proxy_config)
-    full_user_agent = httpclient.format_user_agent(user_agent)
+  user_agent = f"{Extension.dist_name}/{__version__}"
+  proxy = httpclient.format_proxy(proxy_config)
+  full_user_agent = httpclient.format_user_agent(user_agent)
 
-    session = requests.Session()
-    session.proxies.update({"http": proxy, "https": proxy})
-    session.headers.update({"user-agent": full_user_agent})
+  session = requests.Session()
+  session.proxies.update({"http": proxy, "https": proxy})
+  session.headers.update({"user-agent": full_user_agent})
 
-    return session
+  return session
 
 
 @contextlib.contextmanager
 def time_logger(name, level=TRACE):
-    start = time.time()
-    yield
-    end = time.time() - start
-    logger.log(level, f"{name} took {int(end * 1000)}ms")
+  start = time.time()
+  yield
+  end = time.time() - start
+  logger.log(level, f"{name} took {int(end * 1000)}ms")
 
 
 def flatten(list_of_lists):
-    return [item for sublist in list_of_lists for item in sublist]
+  return [item for sublist in list_of_lists for item in sublist]

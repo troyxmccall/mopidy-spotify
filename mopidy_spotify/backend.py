@@ -13,9 +13,6 @@ class SpotifyBackend(pykka.ThreadingActor, backend.Backend):
         self._bitrate = config["spotify"]["bitrate"]
         self._web_client = None
 
-        if config["spotify"]["allow_cache"]:
-            self._cache_location = Extension().get_cache_dir(config)
-
         self.library = library.SpotifyLibraryProvider(backend=self)
         self.playback = SpotifyPlaybackProvider(audio=audio, backend=self)
         if config["spotify"]["allow_playlists"]:
@@ -40,18 +37,26 @@ class SpotifyPlaybackProvider(backend.PlaybackProvider):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._cache_location = Extension().get_cache_dir(self.backend._config)
+        self._data_location = Extension().get_data_dir(self.backend._config)
+        self._config = self.backend._config["spotify"]
+
+        self._credentials_dir = self._data_location / "credentials-cache"
+        if not self._credentials_dir.exists():
+            self._credentials_dir.mkdir(mode=0o700)
 
         username = self.backend._config["spotify"]["username"]
         password = self.backend._config["spotify"]["password"]
         self._auth_string = f"username={username}&password={password}"
-        self._device_name = self.backend._config["spotify"]["device_name"]
 
     def translate_uri(self, uri):
         return f"{uri}?{self._auth_string}&devicename={self._device_name}"
 
     def on_source_setup(self, source):
-        config = self.backend._config["spotify"]
-        for prop in ["username", "password"]:
-            source.set_property(prop, config[prop])
-        if config["allow_cache"]:
-            source.set_property("cache-credentials", self._cache_location)
+        for prop in ["username", "password", "bitrate"]:
+            source.set_property(prop, str(self._config[prop]))
+        source.set_property("cache-credentials", self._credentials_dir)
+        if self._config["allow_cache"]:
+            source.set_property("cache-files", self._cache_location)
+            source.set_property(
+                "cache-max-size", self._config["cache_size"] * 1048576
+            )

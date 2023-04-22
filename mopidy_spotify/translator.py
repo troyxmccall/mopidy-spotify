@@ -161,7 +161,7 @@ def sp_search_query(query, exact=False):
 
     result = []
 
-    for (field, values) in query.items():
+    for field, values in query.items():
         field = SEARCH_FIELD_MAP.get(field, field)
         if field is None:
             continue
@@ -248,7 +248,7 @@ def web_to_track(web_track, bitrate=None, album=None):
 
     if album is None:
         album = web_to_album(web_track.get("album", {}))
-        
+
     return models.Track(
         uri=ref.uri,
         name=ref.name,

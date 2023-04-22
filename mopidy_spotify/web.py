@@ -6,9 +6,9 @@ import time
 import urllib.parse
 from dataclasses import dataclass
 from datetime import datetime
+from email.utils import parsedate_to_datetime
 from enum import Enum, unique
 from typing import Optional
-from email.utils import parsedate_to_datetime
 
 import requests
 
@@ -44,7 +44,6 @@ class OAuthClient:
         retries=3,
         retry_statuses=(500, 502, 503, 429),
     ):
-
         if client_id and client_secret:
             self._auth = (client_id, client_secret)
         else:
@@ -98,7 +97,7 @@ class OAuthClient:
         if result is None or "error" in result:
             logger.error(
                 "Spotify Web API request failed: "
-                f"{result.get('error','Unknown') if result else 'Unknown'}"
+                f"{result.get('error', 'Unknown') if result else 'Unknown'}"
             )
             return WebResponse(None, None)
 
@@ -196,7 +195,7 @@ class OAuthClient:
             # instead some endpoints return 200 with no content, or true/false.
 
             # Decide how long to sleep in the next iteration.
-            backoff_time = backoff_time or (2**i * self._backoff_factor)
+            backoff_time = backoff_time or (2 ** i * self._backoff_factor)
             logger.debug(
                 f"Retrying {prepared_request.url} in {backoff_time:.3f} "
                 "seconds."
@@ -387,7 +386,6 @@ class WebResponse(dict):
 
 
 class SpotifyOAuthClient(OAuthClient):
-
     TRACK_FIELDS = (
         "next,items(track(type,uri,name,duration_ms,disc_number,track_number,"
         "artists,album,is_playable,linked_from.uri))"

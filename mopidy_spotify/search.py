@@ -68,8 +68,8 @@ def search(
         [
             translator.web_to_album(web_album)
             for web_album in result["albums"]["items"][
-                : config["search_album_count"]
-            ]
+                             : config["search_album_count"]
+                             ]
         ]
         if "albums" in result
         else []
@@ -80,8 +80,8 @@ def search(
         [
             translator.web_to_artist(web_artist)
             for web_artist in result["artists"]["items"][
-                : config["search_artist_count"]
-            ]
+                              : config["search_artist_count"]
+                              ]
         ]
         if "artists" in result
         else []
@@ -92,8 +92,8 @@ def search(
         [
             translator.web_to_track(web_track)
             for web_track in result["tracks"]["items"][
-                : config["search_track_count"]
-            ]
+                             : config["search_track_count"]
+                             ]
         ]
         if "tracks" in result
         else []

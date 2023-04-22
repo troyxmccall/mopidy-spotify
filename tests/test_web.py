@@ -1,7 +1,7 @@
 import urllib
+from datetime import datetime
 from unittest import mock
 
-from datetime import datetime
 import pytest
 import requests
 import responses

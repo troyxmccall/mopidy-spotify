@@ -3,8 +3,8 @@ import logging
 from mopidy import models
 
 from mopidy_spotify import playlists, translator
-from mopidy_spotify.web import WebLink
 from mopidy_spotify.utils import flatten
+from mopidy_spotify.web import WebLink
 
 logger = logging.getLogger(__name__)
 
@@ -116,9 +116,9 @@ def _browse_toplist_user(web_client, variant):
             [
                 page.get("items", [])
                 for page in web_client.get_all(
-                    f"me/top/{variant}",
-                    params={"limit": 50},
-                )
+                f"me/top/{variant}",
+                params={"limit": 50},
+            )
                 if page
             ]
         )
@@ -170,9 +170,9 @@ def _browse_playlists(web_client, variant):
             [
                 page.get("playlists", {}).get("items", [])
                 for page in web_client.get_all(
-                    "browse/featured-playlists",
-                    params={"limit": 50},
-                )
+                "browse/featured-playlists",
+                params={"limit": 50},
+            )
                 if page
             ]
         )

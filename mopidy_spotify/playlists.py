@@ -4,7 +4,6 @@ from mopidy import backend
 
 from mopidy_spotify import translator, utils
 
-
 logger = logging.getLogger(__name__)
 
 

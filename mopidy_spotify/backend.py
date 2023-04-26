@@ -49,7 +49,7 @@ class SpotifyPlaybackProvider(backend.PlaybackProvider):
         self._auth_string = f"username={username}&password={password}"
 
     def translate_uri(self, uri):
-        return f"{uri}?{self._auth_string}&devicename={self._device_name}"
+        return f"{uri}?{self._auth_string}"
 
     def on_source_setup(self, source):
         for prop in ["username", "password", "bitrate"]:

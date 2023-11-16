@@ -6,7 +6,7 @@ Mopidy-Spotify
     :target: https://pypi.org/project/Mopidy-Spotify/
     :alt: Latest PyPI version
 
-.. image:: https://img.shields.io/github/workflow/status/mopidy/mopidy-spotify/CI
+.. image:: https://img.shields.io/github/actions/workflow/status/mopidy/mopidy-spotify/ci.yml?branch=main
     :target: https://github.com/mopidy/mopidy-spotify/actions
     :alt: CI build status
 
@@ -125,7 +125,7 @@ Installation
 
 Install by running::
 
-    sudo python3 -m pip install Mopidy-Spotify
+    sudo python3 -m pip install https://github.com/mopidy/mopidy-spotify/archive/master.zip
 
 See https://mopidy.com/ext/spotify/ for alternative installation methods.
 

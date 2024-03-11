@@ -3,7 +3,6 @@ from unittest.mock import patch, sentinel
 
 import pytest
 from mopidy import models
-
 from mopidy_spotify import translator
 
 
@@ -47,7 +46,7 @@ class TestWebToArtistRefs:
         assert refs[0].name == "ABBA"
 
 
-class TestValidWebData(object):
+class TestValidWebData:
     def test_returns_false_if_none(self):
         assert translator.valid_web_data(None, "track") is False
 
@@ -127,9 +126,7 @@ class TestWebToAlbumRefs:
         assert refs[0].name == "ABBA - DEF 456"
 
     def test_bad_albums_filtered(self, web_album_mock, web_artist_mock):
-        refs = list(
-            translator.web_to_album_refs([{}, web_album_mock, web_artist_mock])
-        )
+        refs = list(translator.web_to_album_refs([{}, web_album_mock, web_artist_mock]))
 
         assert len(refs) == 1
 
@@ -208,9 +205,7 @@ class TestWebToTrackRefs:
         assert refs[0].name == "ABC 123"
 
     def test_bad_tracks_filtered(self, web_artist_mock, web_track_mock):
-        refs = list(
-            translator.web_to_track_refs([{}, web_track_mock, web_artist_mock])
-        )
+        refs = list(translator.web_to_track_refs([{}, web_track_mock, web_artist_mock]))
 
         assert len(refs) == 1
 
@@ -350,9 +345,7 @@ class TestToPlaylistRefs:
         assert refs[0].name == "Foo"
 
     def test_bad_playlist_filtered(self, web_playlist_mock):
-        refs = list(
-            translator.to_playlist_refs([{}, web_playlist_mock, {"foo": 1}])
-        )
+        refs = list(translator.to_playlist_refs([{}, web_playlist_mock, {"foo": 1}]))
 
         assert len(refs) == 1
 
@@ -382,9 +375,7 @@ class TestSpotifySearchQuery:
         assert query == "artist:ABBA artist:ACDC"
 
     def test_artist_maps_to_artist_exact(self):
-        query = translator.sp_search_query(
-            {"artist": ["ABBA", "ACDC"]}, exact=True
-        )
+        query = translator.sp_search_query({"artist": ["ABBA", "ACDC"]}, exact=True)
 
         assert query == 'artist:"ABBA" artist:"ACDC"'
 
@@ -410,9 +401,7 @@ class TestSpotifySearchQuery:
         assert query == "album:Greatest album:Hits"
 
     def test_album_maps_to_album_exact(self):
-        query = translator.sp_search_query(
-            {"album": ["Greatest Hits"]}, exact=True
-        )
+        query = translator.sp_search_query({"album": ["Greatest Hits"]}, exact=True)
 
         assert query == 'album:"Greatest Hits"'
 
@@ -447,10 +436,7 @@ class TestSpotifySearchQuery:
         query = translator.sp_search_query({"date": ["abc"]})
 
         assert query == ""
-        assert (
-            'Excluded year from search query: Cannot parse date "abc"'
-            in caplog.text
-        )
+        assert 'Excluded year from search query: Cannot parse date "abc"' in caplog.text
 
     def test_anything_can_be_combined(self):
         query = translator.sp_search_query(
@@ -560,9 +546,7 @@ class TestWebToAlbum:
         assert album.name == "DEF 456"
         assert list(album.artists) == artists
 
-    def test_returns_empty_artists_list_if_artist_is_empty(
-        self, web_album_mock
-    ):
+    def test_returns_empty_artists_list_if_artist_is_empty(self, web_album_mock):
         web_album_mock["artists"] = []
 
         album = translator.web_to_album(web_album_mock)
@@ -685,21 +669,6 @@ class TestWebToTrack:
         assert track.name == "ABC 123"
         assert track.album is None
 
-    @pytest.mark.parametrize(
-        "data",
-        [
-            (123),
-            (123.0),
-            ("123"),
-            ("123.0"),
-        ],
-    )
-    def test_int_or_none_number(self, data):
-        assert translator.int_or_none(data) == 123
-
-    def test_int_or_none_none(self):
-        assert translator.int_or_none(None) is None
-
     def test_ints_might_be_floats(self, web_track_mock):
         web_track_mock["duration_ms"] = 123.0
         web_track_mock["disc_number"] = "456.0"
@@ -710,3 +679,61 @@ class TestWebToTrack:
         assert track.length == 123
         assert track.disc_no == 456
         assert track.track_no == 99
+
+
+@pytest.mark.parametrize(
+    "data",
+    [
+        (123),
+        (123.0),
+        ("123"),
+        ("123.0"),
+    ],
+)
+def test_int_or_none_number(data):
+    assert translator.int_or_none(data) == 123
+
+
+def test_int_or_none_none():
+    assert translator.int_or_none(None) is None
+
+
+def test_web_to_image():
+    data = {"height": 640, "url": "img://1/a", "width": 200}
+
+    image = translator.web_to_image(data)
+
+    assert isinstance(image, models.Image)
+    assert image.uri == "img://1/a"
+    assert image.height == 640
+    assert image.width == 200
+
+
+def test_web_to_image_no_dimensions():
+    data = {"height": 640, "url": "img://1/a"}
+
+    image = translator.web_to_image(data)
+
+    assert isinstance(image, models.Image)
+    assert image.uri == "img://1/a"
+    assert image.height == 640
+    assert image.width is None
+
+
+@pytest.mark.parametrize(
+    ("height", "width"),
+    [
+        (600, 400),
+        (600.0, 400.0),
+        ("600", "400"),
+        ("600.0", "400.0"),
+    ],
+)
+def test_web_to_image_ints_might_be_floats(height, width):
+    data = {"height": height, "url": "img://1/a", "width": width}
+
+    image = translator.web_to_image(data)
+
+    assert isinstance(image, models.Image)
+    assert image.height == 600
+    assert image.width == 400

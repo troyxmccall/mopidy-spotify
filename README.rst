@@ -53,27 +53,6 @@ Working support for the following features is currently available:
 - Lookup by URI
 
 
-Maintainer wanted
-=================
-
-Mopidy-Spotify is currently kept on life support by the Mopidy core developers.
-It is in need of a more dedicated maintainer.
-
-If you want to be the maintainer of Mopidy-Spotify, please:
-
-1. Make 2-3 good pull requests improving any part of the project.
-
-2. Read and get familiar with all of the project's open issues.
-
-3. Send a pull request removing this section and adding yourself as the
-   "Current maintainer" in the "Credits" section below. In the pull request
-   description, please refer to the previous pull requests and state that
-   you've familiarized yourself with the open issues.
-
-   As a maintainer, you'll be given push access to the repo and the authority
-   to make releases to PyPI when you see fit.
-
-
 Dependencies
 ============
 
@@ -89,33 +68,19 @@ Dependencies
   Settings > Security > App passwords > Generate app passwords, and generate one
   to use with Mopidy-Spotify.
 
+- ``Mopidy`` >= 3.4. The music server that Mopidy-Spotify extends.
+
 - ``gst-plugins-spotify`` >= 0.10. The `GStreamer Rust Plugin
   <https://gitlab.freedesktop.org/gstreamer/gst-plugins-rs>`_ to stream Spotify
   audio, based on `librespot <https://github.com/librespot-org/librespot/>`_.
-  This plugin is not yet available from apt.mopidy.com and must be built from
-  source (see below).
+  **This plugin is not yet available from apt.mopidy.com**. It must be either
+  `built from source
+  <https://github.com/kingosticks/gst-plugins-rs-build/tree/main?tab=readme-ov-file#native-compile>`_
+  or `Debian packages are available
+  <https://github.com/kingosticks/gst-plugins-rs-build/releases/latest>`_
+  for some platforms.
 
-- ``Mopidy`` >= 3.4. The music server that Mopidy-Spotify extends.
-
-Example build instructions for ``gst-plugins-spotify``::
-
-1. `Install Rust <https://www.rust-lang.org/tools/install>`_::
-
-    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-
-2. Install the `GStreamer Rust bindings
-   <https://gitlab.freedesktop.org/gstreamer/gstreamer-rs#installation>`_ dependencies::
-
-    sudo apt install libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev gcc pkg-config git
-
-3. Download, build and install ``gst-plugins-spotify`` from source::
-
-    git clone --depth 1 https://gitlab.freedesktop.org/gstreamer/gst-plugins-rs
-    cd gst-plugins-rs
-    cargo build --package gst-plugin-spotify --release
-    sudo install -m 644 target/release/libgstspotify.so $(pkg-config --variable=pluginsdir gstreamer-1.0)/
-
-4. Verify the spotify plugin is available::
+Verify the GStreamer spotify plugin is correctly installed:: 
 
     gst-inspect-1.0 spotify
 
@@ -125,9 +90,7 @@ Installation
 
 Install by running::
 
-    sudo python3 -m pip install --break-system-packages https://github.com/mopidy/mopidy-spotify/archive/main.zip
-
-See https://mopidy.com/ext/spotify/ for alternative installation methods.
+    sudo python3 -m pip install --break-system-packages Mopidy-Spotify==5.0.0a1
 
 
 Configuration
@@ -196,5 +159,5 @@ Credits
 =======
 
 - Original author: `Stein Magnus Jodal <https://github.com/jodal>`__
-- Current maintainer: None. Maintainer wanted, see section above.
+- Current maintainer: `Nick Steel <https://github.com/kingosticks>`__
 - `Contributors <https://github.com/mopidy/mopidy-spotify/graphs/contributors>`_
